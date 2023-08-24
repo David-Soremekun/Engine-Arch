@@ -6,19 +6,20 @@
 #include "BulletEntity.h"
 const int kNumOfBulletsInPool = 50;
 
+World::World()
+{
+}
+
 World::~World()
 {
 	// Deletes are the objects
-	//delete audio;
 	delete enemy;
 	delete player;
 	delete visuals;
 	delete sound;
 	for(auto entity: m_entities) 
 	{
-		
 		delete entity;
-		
 	}
 	
 }
@@ -37,16 +38,12 @@ void World::LoadLevel()
 		return;
 	if (!visuals->CreateSprite("enemyCharacter",true,"enemy-ship.tga")) 
 		return;
-	
-	
 
 	if (!sound->LoadSound("piano-melody","stage-music"))
 		return;
 	if (!sound->LoadSound("arcade-shoot", "shoot-sound"))
 		return;
 
-	
-	
 }
 
 void World::Run()
@@ -56,25 +53,23 @@ void World::Run()
 	visuals = new Visualisation(HAPI.GetScreenPointer());
 	LoadLevel();
 		
-	sound->PlaySound("piano-melody.wav", false, true, 1.0f, 0.0f, 1.0f);
+	//sound->PlaySound("piano-melody.wav", false, true, 1.0f, 0.0f, 1.0f);
 
 	// Setup the Player
 	player = new PlayerEntity("playerCharacter");
-	//player->SetAlive();
 	m_entities.push_back(player);
-	//player->getEntityPosition();
+	
 
 	// Setup the Enemy
 	enemy = new EnemyEntity("enemyCharacter");
-	enemy->IsAlive();
 	m_entities.push_back(enemy);
 
 	m_bulletStartIndex = m_entities.size()+1;
 
-	for (size_t i = 0; i < 50; i++) {
+	/*for (size_t i = 0; i < 50; i++) {
 		BulletEntity *newBullet = new BulletEntity("bullet");
 		m_entities.push_back(newBullet);
-	}
+	}*/
 
 	while (HAPI.Update())
 	{
@@ -85,21 +80,12 @@ void World::Run()
 			
 		}
 
-		// Collisions go here
-		/*for (Entity* entity : m_entities)
-		{
-			if (entity->GetSide() != Side::eNeutral)
-			{
-				if (entity->GetSide() != Side::eEnemy) {
-					CheckCollisions(*entity);
-
-				}
-				
-
-			}
-			
-		}*/
 		
+		for (Entity* entity : m_entities)
+		{
+			entity->Render(visuals);
+
+		}
 		// ClearScreen
 		visuals->ClearScreen(Width, Height);
 		
@@ -107,11 +93,8 @@ void World::Run()
 		m_entities[0]->Render(visuals);
 			
 		
-		// Check it right inputhas been entered to screenshot
+		// Check it right input has been entered to screenshot
 		CheckToScreenshot();
-		hasWon();
-		DetectWin();
-		
 		
 		//HAPI.LimitFrameRate(120);
 		HAPI.SetShowFPS(true);
@@ -122,43 +105,16 @@ void World::Run()
 void World::CheckToScreenshot()
 {
 	_ASSERT(player);
+
 	if (player->ScreenTrigger()) {
 		visuals->ScreenShot(Width,Height);
 		std::cerr << "Screenshot Taken!";
 	}
 	
 }
-void World::DetectWin()
-{
-	if (m_wonGame) {
-		HAPI.RenderText(20, 700, HAPI_TColour(255, 255, 255), "HOORAY YOU HAVE WON", 48);
 
-	}
-}
-bool World::hasWon()
-{
-	if (player->getEntityPosition() == GoldenSection) {
-		m_wonGame = true;
-		return true;
-	}
-	else{
-		m_wonGame = false;
-		return false;
 
-	}
-}
-bool World::CheckCollisions(Entity& otherEntity)
-{
-	// Do Collisions
-	if (player->getRect().CompletelyContains(otherEntity.getRect())==false) 
-	{
-		player->GetEntityHealth()-20;
-	}
-	else {
 
-	}
-	return false;
-}
 
 void World::FireBullets(Side eSide, Vector2 velocity, Vector2 startPos)
 {

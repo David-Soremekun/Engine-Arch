@@ -31,7 +31,7 @@ private:
 	
 
 protected:
-	bool hasWon = false;
+	
 	bool e_isAlive{ false };
 	int e_entityHealth;
 	Vector2 e_entityPosition;
@@ -40,6 +40,7 @@ protected:
 	
 public:
 	//bool CheckForCollision(Entity &otherEntity);
+	Entity();
 	~Entity();
 	
 

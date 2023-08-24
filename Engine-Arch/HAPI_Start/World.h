@@ -31,13 +31,13 @@ private:
 	
 	std::vector<Entity*>m_entities;
 public:
-	bool hasWon();
+	World();
 	~World();
 	void Run();
 	void LoadLevel();
 	void FireBullets(Side eSide, Vector2 velocity, Vector2 startPos);
 	void CheckToScreenshot();
-	void DetectWin();
+	
 	bool CheckCollisions(Entity& otherEntity);
 	
 };
