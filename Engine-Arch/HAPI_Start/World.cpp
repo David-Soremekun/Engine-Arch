@@ -13,13 +13,17 @@ World::World()
 World::~World()
 {
 	// Deletes are the objects
-	delete enemy;
-	delete player;
 	delete visuals;
 	delete sound;
-	for(auto entity: m_entities) 
+	delete player;
+	delete enemy;
+	
+	
+	
+
+	for(int i=0; i< kNumOfBulletsInPool;i++) 
 	{
-		delete entity;
+		delete(m_entities[i]);
 	}
 	
 }
@@ -66,10 +70,11 @@ void World::Run()
 
 	m_bulletStartIndex = m_entities.size()+1;
 
-	/*for (size_t i = 0; i < 50; i++) {
+	for (size_t i = 0; i < 50; i++) {
 		BulletEntity *newBullet = new BulletEntity("bullet");
 		m_entities.push_back(newBullet);
-	}*/
+	}
+	std::cout << m_entities.size() << std::endl;
 
 	while (HAPI.Update())
 	{
